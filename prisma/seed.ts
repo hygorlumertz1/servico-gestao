@@ -2,7 +2,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Criar 10 clientes
+  console.log('Populando o banco de dados...');
+
+  // --- Criar 10 clientes ---
   for (let i = 1; i <= 10; i++) {
     await prisma.cliente.create({
       data: {
@@ -12,54 +14,59 @@ async function main() {
     });
   }
 
-  // Criar 5 planos
+  // --- Criar 5 planos ---
   for (let i = 1; i <= 5; i++) {
     await prisma.plano.create({
       data: {
         nome: `Plano ${i}`,
-        descricao: `Plano básico ${i}`,
-        custoMensal: 49.90 + i,
+        descricao: `Plano nível ${i}`,
+        custoMensal: 39.9 + i * 10,
         data: new Date(),
       },
     });
   }
 
-  // Criar apenas uma assinatura inativa
+  // --- Criar 5 assinaturas ---
   const clientes = await prisma.cliente.findMany();
   const planos = await prisma.plano.findMany();
 
-  if (clientes.length > 0 && planos.length > 0) {
-    const cliente = clientes[0];
-    const plano = planos[0];
+  for (let i = 0; i < 5; i++) {
+    const cliente = clientes[i];
+    const plano = planos[i];
 
     const hoje = new Date();
-    const fim = new Date(hoje);
-    fim.setFullYear(hoje.getFullYear() + 1);
+    const fimFidelidade = new Date(hoje);
+    fimFidelidade.setFullYear(hoje.getFullYear() + 1);
 
-    // Criar data do último pagamento há 31 dias para garantir que a assinatura esteja inativa
-    const dataUltimoPagamento = new Date(hoje);
-    dataUltimoPagamento.setDate(hoje.getDate() - 31);
+    const dataUltimoPagamento =
+      i === 4
+        ? new Date(hoje.getTime() - 40 * 24 * 60 * 60 * 1000) // assinatura cancelada
+        : hoje;
 
     await prisma.assinatura.create({
       data: {
         codCliente: cliente.id,
         codPlano: plano.id,
         inicioFidelidade: hoje,
-        fimFidelidade: fim,
+        fimFidelidade: fimFidelidade,
         dataUltimoPagamento: dataUltimoPagamento,
-        custoFinal: plano.custoMensal * 0.9, // 10% de desconto
-        descricao: 'Assinatura inativa para testes',
+        custoFinal: plano.custoMensal * 0.9,
+        descricao:
+          i === 4
+            ? 'Assinatura cancelada (pagamento atrasado)'
+            : 'Assinatura ativa com desconto de fidelidade',
       },
     });
   }
+
+  console.log('Seed concluído com sucesso!');
 }
 
 main()
-  .then(() => {
-    console.log('Seed completo!');
-    return prisma.$disconnect();
-  })
   .catch((e) => {
-    console.error(e);
-    return prisma.$disconnect();
+    console.error('Erro ao executar seed:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });
