@@ -2,7 +2,7 @@
 
 Este é um serviço backend desenvolvido com NestJS para gerenciar clientes, planos e assinaturas. O projeto utiliza Prisma como ORM e SQLite como banco de dados.
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - [NestJS](https://nestjs.com/) - Framework Node.js para construção de aplicações server-side
 - [Prisma](https://www.prisma.io/) - ORM moderno para Node.js e TypeScript
@@ -10,13 +10,13 @@ Este é um serviço backend desenvolvido com NestJS para gerenciar clientes, pla
 - [TypeScript](https://www.typescriptlang.org/) - Superset JavaScript com tipagem estática
 - [Jest](https://jestjs.io/) - Framework de testes
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Node.js (versão 18 ou superior)
 - npm ou yarn
 - Git
 
-## 🔧 Instalação
+## Instalação
 
 1. Clone o repositório:
 ```bash
@@ -45,7 +45,7 @@ npx prisma migrate dev
 npx ts-node prisma/seed.ts
 ```
 
-## 🏃‍♂️ Executando o Projeto
+## Executando o Projeto
 
 ### Desenvolvimento
 ```bash
@@ -58,7 +58,7 @@ npm run build
 npm run start:prod
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 servico-gestao/
@@ -71,7 +71,7 @@ servico-gestao/
 └── ...configurações
 ```
 
-## 📊 Modelos de Dados
+## Modelos de Dados
 
 O sistema possui três modelos principais:
 
